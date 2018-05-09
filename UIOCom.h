@@ -1,0 +1,24 @@
+#ifndef UIOCOM_H
+#define UIOCOM_H
+
+#include <string>
+
+#include "FPGACom.h"
+
+class UIOCom : public FPGACom
+{
+public:
+  UIOCom(const std::string& device, unsigned int size);
+  virtual ~UIOCom();
+
+  virtual void write_reg(unsigned int address, unsigned int data);
+  virtual unsigned int read_reg(unsigned int address);
+
+private:
+  unsigned int m_size;
+
+  int m_fd;
+  unsigned *m_ptr;
+};
+
+#endif // UICOM_H
