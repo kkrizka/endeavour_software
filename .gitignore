@@ -1,6 +1,7 @@
 # Generic backup files
 *~
 \#*
+.\#*
 
 # Prerequisites
 *.d
