@@ -1,13 +1,13 @@
-#ifndef FPGACOM_H
-#define FPGACOM_H
+#ifndef DEVICECOM_H
+#define DEVICECOM_H
 
-class FPGACom
+class DeviceCom
 {
 public:
-  FPGACom();
+  DeviceCom();
 
   virtual void write_reg(unsigned int address, unsigned int data) =0;
   virtual unsigned int read_reg(unsigned int address) =0;
 };
 
-#endif // FPGACOM_H
+#endif // DEVICECOM_H

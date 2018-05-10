@@ -1,6 +1,6 @@
 CC=g++
 
-OBJS=main.o FPGACom.o UIOCom.o
+OBJS=main.o DeviceCom.o UIOCom.o EndeavourRaw.o
 
 all: $(OBJS)
 	$(CC) $(LDFLAGS) -o test $(OBJS)
@@ -8,3 +8,5 @@ all: $(OBJS)
 %.o: %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
+clean:
+	rm test *.o

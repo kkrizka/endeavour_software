@@ -3,9 +3,9 @@
 
 #include <string>
 
-#include "FPGACom.h"
+#include "DeviceCom.h"
 
-class UIOCom : public FPGACom
+class UIOCom : public DeviceCom
 {
 public:
   UIOCom(const std::string& device, unsigned int size);
