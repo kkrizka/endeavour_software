@@ -12,10 +12,10 @@ public:
 
   void reset();
 
-  void sendData(unsigned int data, uint size);
+  void sendData(unsigned long long int data, uint size);
 
   bool isDataValid();
-  void readData(unsigned int& data, uint& size);
+  void readData(unsigned long long int& data, uint& size);
 
 private:
   std::shared_ptr<DeviceCom> m_fpgaCom;

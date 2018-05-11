@@ -12,19 +12,22 @@ bool EndeavourRaw::isDataValid()
   m_fpgaCom->read_reg(0) & 0x1;
 }
 
-void EndeavourRaw::sendData(unsigned int data, uint size)
+void EndeavourRaw::sendData(unsigned long long int data, uint size)
 {
   m_fpgaCom->write_reg(1, size);
-  m_fpgaCom->write_reg(2, data);
+  m_fpgaCom->write_reg(2, (data>>0 )&0xFFFFFFFF);
+  m_fpgaCom->write_reg(3, (data>>32)&0xFFFFFFFF);
   m_fpgaCom->write_reg(0, 0x2);
 }
 
-void EndeavourRaw::readData(unsigned int& data, uint& size)
+void EndeavourRaw::readData(unsigned long long int& data, uint& size)
 {
   if(isDataValid())
     {
       size=m_fpgaCom->read_reg(4);
-      data=m_fpgaCom->read_reg(5);
+      data=m_fpgaCom->read_reg(6);
+      data<<=32;
+      data|=m_fpgaCom->read_reg(5);
     }
   else
     {
