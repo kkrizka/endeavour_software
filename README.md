@@ -3,13 +3,12 @@
 Software for controlling the [endeavour_master firmware block](https://github.com/kkrizka/endeavour_firmware) on a Zynq FPGA. Communication with the device is done using the userspace I/O kernel module.
 
 ## Compilation
-If using PetaLinux, make sure that have the build tools and CMake installed. To enable the CMake Yocto recipe, append the following at the end of `./build/misc/rootfs_config/Kconfig.user`.
+If using [PetaLinux](https://www.xilinx.com/products/design-tools/embedded-software/petalinux-sdk.html), make sure that have the build tools and CMake installed. To enable the [CMake Yocto recipe](https://github.com/openembedded/openembedded-core/tree/master/meta/recipes-devtools/cmake), append the following at the end of `./build/misc/rootfs_config/Kconfig.user`.
 ```
 menu "user packages " 
 config cmake  
          bool "cmake"
          help
-
 endmenu
 ```
 
