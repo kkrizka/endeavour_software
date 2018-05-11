@@ -12,7 +12,7 @@ bool EndeavourRaw::isDataValid()
   m_fpgaCom->read_reg(0) & 0x1;
 }
 
-void EndeavourRaw::sendData(unsigned long long int data, uint size)
+void EndeavourRaw::sendData(unsigned long long int data, unsigned int size)
 {
   m_fpgaCom->write_reg(1, size);
   m_fpgaCom->write_reg(2, (data>>0 )&0xFFFFFFFF);
@@ -20,7 +20,7 @@ void EndeavourRaw::sendData(unsigned long long int data, uint size)
   m_fpgaCom->write_reg(0, 0x2);
 }
 
-void EndeavourRaw::readData(unsigned long long int& data, uint& size)
+void EndeavourRaw::readData(unsigned long long int& data, unsigned int& size)
 {
   if(isDataValid())
     {

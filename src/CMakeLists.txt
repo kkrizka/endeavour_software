@@ -4,5 +4,6 @@ SET(SrcFiles DeviceCom.cpp
 )
 
 ADD_LIBRARY(endeavour SHARED ${SrcFiles}) 
+INSTALL(TARGETS endeavour LIBRARY DESTINATION lib)
 
 ADD_SUBDIRECTORY(tools)

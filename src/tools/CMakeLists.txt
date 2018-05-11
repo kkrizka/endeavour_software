@@ -10,4 +10,6 @@ FOREACH(target ${tools})
 
   ADD_EXECUTABLE(${execname} ${srcfile})
   TARGET_LINK_LIBRARIES(${execname} -lendeavour)
+
+  INSTALL(TARGETS ${execname} RUNTIME DESTINATION bin)
 ENDFOREACH()
