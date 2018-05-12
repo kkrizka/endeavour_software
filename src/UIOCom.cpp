@@ -23,4 +23,4 @@ void UIOCom::write_reg(unsigned int address, unsigned int data)
 { m_ptr[address] = data; }
 
 unsigned int UIOCom::read_reg(unsigned int address)
-{ return m_ptr[address]; };
+{ return m_ptr[address]; }

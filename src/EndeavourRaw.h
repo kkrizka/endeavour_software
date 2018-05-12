@@ -1,5 +1,5 @@
 #ifndef ENDEAVOURRAW_H
-#define ENDEAVOURCOM_H
+#define ENDEAVOURRAW_H
 
 #include <memory>
 
@@ -21,4 +21,4 @@ private:
   std::shared_ptr<DeviceCom> m_fpgaCom;
 };
 
-#endif //ENDEAVOURCOM_H
+#endif //ENDEAVOURRAW_H

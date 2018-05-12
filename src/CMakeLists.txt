@@ -1,5 +1,6 @@
 SET(SrcFiles DeviceCom.cpp
   UIOCom.cpp
+  EndeavourCom.cpp
   EndeavourRaw.cpp
 )
 

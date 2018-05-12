@@ -9,7 +9,7 @@ void EndeavourRaw::reset()
 
 bool EndeavourRaw::isDataValid()
 {
-  m_fpgaCom->read_reg(0) & 0x1;
+  return (m_fpgaCom->read_reg(0)>>1)&1;
 }
 
 void EndeavourRaw::sendData(unsigned long long int data, unsigned int size)
