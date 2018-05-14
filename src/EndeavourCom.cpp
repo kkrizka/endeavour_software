@@ -1,5 +1,7 @@
 #include "EndeavourCom.h"
 
+#include "EndeavourComException.h"
+
 #include <iostream>
 #include <unistd.h>
 
@@ -12,6 +14,7 @@ EndeavourCom::EndeavourCom(unsigned int amacid, std::shared_ptr<DeviceCom> fpgaC
 void EndeavourCom::reset()
 {
   m_raw->reset();
+  m_seqnum=0;
 }
 
 void EndeavourCom::setid(unsigned int padid)
@@ -59,14 +62,27 @@ void EndeavourCom::setid(unsigned int padid)
 
   // send data
   m_raw->sendData(databits, 56);
+  m_seqnum++;
 
   // wait for response ( poll :( )
   while(!m_raw->isDataValid()) { continue; }
 
+  // Parse the response
   unsigned long long int read_data;
   unsigned int read_nbits;
   m_raw->readData(read_data,read_nbits);
-  std::cout << m_raw->isDataValid() << " " << read_nbits << " " << std::hex << read_data << std::dec << std::endl;
+  //std::cout << m_raw->isDataValid() << " " << read_nbits << " " << std::hex << read_data << std::dec << std::endl;
+
+  if(read_nbits!=8)
+    throw EndeavourComException("SETID recieved wrong number of bits: %d (expected 8)",read_nbits);
+
+  unsigned short int seqnum=read_data&0b111;
+  if(seqnum!=m_seqnum)
+    throw EndeavourComException("SETID recieved wrong sequence: %d (expected %d)",seqnum,m_seqnum);
+
+  unsigned short int amacid=(read_data>>3)&0b11111;
+  if(amacid!=m_amacid)
+    throw EndeavourComException("SETID recieved wrong amacid: %d (expected %d)",amacid,m_amacid);
 }
 
 void EndeavourCom::write_reg(unsigned int address, unsigned int data)
@@ -98,14 +114,27 @@ void EndeavourCom::write_reg(unsigned int address, unsigned int data)
 
   // send data
   m_raw->sendData(databits, 56);
+  m_seqnum++;
 
   // wait for response ( poll :( )
   while(!m_raw->isDataValid()) { continue; }
 
+  // Parse the response
   unsigned long long int read_data;
   unsigned int read_nbits;
   m_raw->readData(read_data,read_nbits);
-  std::cout << m_raw->isDataValid() << " " << read_nbits << " " << std::hex << read_data << std::dec << std::endl;
+  //std::cout << m_raw->isDataValid() << " " << read_nbits << " " << std::hex << read_data << std::dec << std::endl;
+
+   if(read_nbits!=8)
+    throw EndeavourComException("WRITE recieved wrong number of bits: %d (expected 8)",read_nbits);
+
+  unsigned short int seqnum=read_data&0b111;
+  if(seqnum!=m_seqnum)
+    throw EndeavourComException("WRITE recieved wrong sequence: %d (expected %d)",seqnum,m_seqnum);
+
+  unsigned short int amacid=(read_data>>3)&0b11111;
+  if(amacid!=m_amacid)
+    throw EndeavourComException("WRITE recieved wrong amacid: %d (expected %d)",amacid,m_amacid);
 }
 
 unsigned int EndeavourCom::read_reg(unsigned int address)
@@ -128,14 +157,35 @@ unsigned int EndeavourCom::read_reg(unsigned int address)
 
   // send data
   m_raw->sendData(databits, 16);
+  m_seqnum++;
 
   // wait for response ( poll :( )
   while(!m_raw->isDataValid()) { continue; }
 
+  // Parse the response
   unsigned long long int read_data;
   unsigned int read_nbits;
   m_raw->readData(read_data,read_nbits);
-  std::cout << m_raw->isDataValid() << " " << read_nbits << " " << std::hex << read_data << std::dec << std::endl;
+  //std::cout << m_raw->isDataValid() << " " << read_nbits << " " << std::hex << read_data << std::dec << std::endl;
+
+  if(read_nbits!=48)
+    throw EndeavourComException("READ recieved wrong number of bits: %d (expected 48)",read_nbits);
+
+  unsigned int data=read_data&0xFFFFFFFF;
+
+  unsigned short int retaddress=(read_data>>32)&0xFF;
+  if(retaddress!=address)
+    throw EndeavourComException("READ recieved wrong address: 0x%08X (expected %08X)",retaddress,address);
+
+  unsigned short int seqnum=(read_data>>40)&0b111;
+  if(seqnum!=m_seqnum)
+    throw EndeavourComException("READ recieved wrong sequence: %d (expected %d)",seqnum,m_seqnum);
+
+  unsigned short int amacid=(read_data>>43)&0b11111;
+  if(amacid!=m_amacid)
+    throw EndeavourComException("READ recieved wrong amacid: %d (expected %d)",amacid,m_amacid);
+
+  return data;
 }
 
 unsigned int EndeavourCom::calc_crc(unsigned long long int data) const

@@ -2,6 +2,9 @@ SET(SrcFiles DeviceCom.cpp
   UIOCom.cpp
   EndeavourCom.cpp
   EndeavourRaw.cpp
+
+  ComIOException.cpp
+  EndeavourComException.cpp
 )
 
 ADD_LIBRARY(endeavour SHARED ${SrcFiles}) 

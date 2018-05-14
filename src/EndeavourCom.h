@@ -21,6 +21,8 @@ public:
 private:
   unsigned int m_amacid;
 
+  unsigned int m_seqnum =0;
+
   std::unique_ptr<EndeavourRaw> m_raw;
   std::shared_ptr<DeviceCom> m_fpgaCom;
 

@@ -1,7 +1,11 @@
 #include "UIOCom.h"
 
+#include "ComIOException.h"
+
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/mman.h>
 #include <fcntl.h>
@@ -10,6 +14,9 @@ UIOCom::UIOCom(const std::string& device, unsigned int size)
   : m_size(size)
 {
   m_fd = open(device.c_str(), O_RDWR);
+  if(m_fd==-1)
+    throw ComIOException("UIOCom cannot open "+device+": "+strerror(errno));
+
   m_ptr = (unsigned*)mmap(NULL, m_size, PROT_READ|PROT_WRITE, MAP_SHARED, m_fd, 0);
 }
 
