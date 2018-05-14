@@ -33,3 +33,15 @@ make
 
 Several useful tools will are available in the `bin/` directory.
 
+## Endeavour Command
+The package comes with a simple `endeavour` command for one-off register reads and writes. Run `endeavour -h` to get list of all options.
+
+Example usage is
+```shell
+endeavour reset
+endeavour setid idpads 0
+endeavour write 0x1 0x1
+endeavour read 0x1
+```
+
+Note that `endeavour reset` runs reset on the `endeavour_master` block. Not the slave (ie: AMACv2).
