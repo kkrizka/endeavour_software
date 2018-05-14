@@ -9,8 +9,8 @@ FOREACH(target ${tools})
   GET_FILENAME_COMPONENT(srcfile ${target} NAME)
 
   ADD_EXECUTABLE(${execname} ${srcfile})
-  TARGET_LINK_LIBRARIES(${execname} -lendeavour)
-  ADD_DEPENDENCIES(${execname} endeavour)
+  TARGET_LINK_LIBRARIES(${execname} -ldevcom)
+  ADD_DEPENDENCIES(${execname} devcom)
 
   INSTALL(TARGETS ${execname} RUNTIME DESTINATION bin)
 ENDFOREACH()

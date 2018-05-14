@@ -5,11 +5,14 @@
 #include <iostream>
 #include <unistd.h>
 
-EndeavourCom::EndeavourCom(unsigned int amacid, std::shared_ptr<DeviceCom> fpgaCom)
+EndeavourCom::EndeavourCom(unsigned short amacid, std::shared_ptr<DeviceCom> fpgaCom)
   : m_amacid(amacid&0x1F), m_fpgaCom(fpgaCom)
 {
   m_raw=std::unique_ptr<EndeavourRaw>(new EndeavourRaw(m_fpgaCom));
 }
+
+void EndeavourCom::enableSeqNum(bool enableSeqNum)
+{ m_enableSeqNum=enableSeqNum; }
 
 void EndeavourCom::reset()
 {
@@ -17,7 +20,7 @@ void EndeavourCom::reset()
   m_seqnum=0;
 }
 
-void EndeavourCom::setid(unsigned int padid)
+void EndeavourCom::setid(REFMODE mode, unsigned int refid)
 {
   unsigned long long int databits=0;
 
@@ -45,7 +48,10 @@ void EndeavourCom::setid(unsigned int padid)
 
   // efuseid[19:0]
   databits<<=20;
-  databits|=0xFFFFF;
+  if(mode==REFMODE::EfuseId)
+    databits|=(refid&0xFFFFF);
+  else
+    databits|=0xFFFFF;
 
   // 3'b111
   databits<<=3;
@@ -53,7 +59,10 @@ void EndeavourCom::setid(unsigned int padid)
 
   // idpads[4:0]
   databits<<=5;
-  databits|=(padid&0x1F);
+  if(mode==IDPads)
+    databits|=(refid&0x1F);
+  else
+    databits|=0x1F;
 
   // crc[7:0]
   unsigned int crc=calc_crc(databits);
@@ -77,7 +86,7 @@ void EndeavourCom::setid(unsigned int padid)
     throw EndeavourComException("SETID recieved wrong number of bits: %d (expected 8)",read_nbits);
 
   unsigned short int seqnum=read_data&0b111;
-  if(seqnum!=m_seqnum)
+  if(m_enableSeqNum && seqnum!=m_seqnum)
     throw EndeavourComException("SETID recieved wrong sequence: %d (expected %d)",seqnum,m_seqnum);
 
   unsigned short int amacid=(read_data>>3)&0b11111;
@@ -129,7 +138,7 @@ void EndeavourCom::write_reg(unsigned int address, unsigned int data)
     throw EndeavourComException("WRITE recieved wrong number of bits: %d (expected 8)",read_nbits);
 
   unsigned short int seqnum=read_data&0b111;
-  if(seqnum!=m_seqnum)
+  if(m_enableSeqNum && seqnum!=m_seqnum)
     throw EndeavourComException("WRITE recieved wrong sequence: %d (expected %d)",seqnum,m_seqnum);
 
   unsigned short int amacid=(read_data>>3)&0b11111;
@@ -178,7 +187,7 @@ unsigned int EndeavourCom::read_reg(unsigned int address)
     throw EndeavourComException("READ recieved wrong address: 0x%08X (expected %08X)",retaddress,address);
 
   unsigned short int seqnum=(read_data>>40)&0b111;
-  if(seqnum!=m_seqnum)
+  if(m_enableSeqNum && seqnum!=m_seqnum)
     throw EndeavourComException("READ recieved wrong sequence: %d (expected %d)",seqnum,m_seqnum);
 
   unsigned short int amacid=(read_data>>43)&0b11111;

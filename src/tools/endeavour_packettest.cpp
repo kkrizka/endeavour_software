@@ -13,12 +13,13 @@ int main()
     {
       std::shared_ptr<DeviceCom> dev=std::make_shared<UIOCom>("/dev/uio2", 0x10000);
       EndeavourCom end(0x15, dev);
+      end.enableSeqNum(true);
 
       std::cout << "Running reset" << std::endl;
       end.reset();
 
       std::cout << "SETID" << std::endl;
-      end.setid(0);
+      end.setid(EndeavourCom::IDPads, 0);
 
       std::cout << "WRITE" << std::endl;
       end.write_reg(1, 1);

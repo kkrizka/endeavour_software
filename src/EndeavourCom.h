@@ -9,19 +9,24 @@
 class EndeavourCom : public DeviceCom
 {
 public:
-  EndeavourCom(unsigned int amacid, std::shared_ptr<DeviceCom> fpgaCom);
+  enum REFMODE {IDPads, EfuseId};
+
+  EndeavourCom(unsigned short amacid, std::shared_ptr<DeviceCom> fpgaCom);
+
+  void enableSeqNum(bool enableSeqNum);
 
   void reset();
 
-  void setid(unsigned int padid);
+  void setid(REFMODE mode, unsigned int refid);
 
   virtual void write_reg(unsigned int address, unsigned int data);
   virtual unsigned int read_reg(unsigned int address);
 
 private:
-  unsigned int m_amacid;
+  unsigned short m_amacid;
 
-  unsigned int m_seqnum =0;
+  bool m_enableSeqNum =false;
+  unsigned short m_seqnum =0;
 
   std::unique_ptr<EndeavourRaw> m_raw;
   std::shared_ptr<DeviceCom> m_fpgaCom;
